@@ -114,7 +114,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   let {done} = request.body;
-  done = (done!= true && done != false)? true : done;
+  done = (done!= true && done != false)? true : done;   
   console.log('done',done);
   const {id} = request.params;
 
