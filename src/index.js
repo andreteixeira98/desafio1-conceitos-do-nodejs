@@ -112,10 +112,8 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 
 });
 
-app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  let {done} = request.body;
-  done = (done!= true && done != false)? true : done;   
-  console.log('done',done);
+app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => { 
+  
   const {id} = request.params;
 
   let todoUpdate = {};
@@ -123,7 +121,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const newTodos = request.user.todos.map(todo =>{
     if(todo.id === id){
       
-      todo.done = done;
+      todo.done = true;
       todoUpdate = todo;
     }
 
@@ -141,7 +139,18 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const {id} = request.params;
+
+  const todoAlreadyExists = request.user.todos.some(todo => todo.id === id);
+
+  if(!todoAlreadyExists){
+    return response.status(404).json({error:"todo not found!"});
+  }
+  const newTodos =  request.user.todos.filter(todo => todo.id !== id);
+
+  request.user.todos = newTodos;
+  return response.status(204).send();
+
 });
 
 module.exports = app;
